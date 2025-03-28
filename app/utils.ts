@@ -18,3 +18,9 @@ export function nice_time_ago(us: Number): String {
   dt /= 24; // days
   return `${Math.round(dt)} day${Math.round(dt) > 1 ? 's' : ''}`;
 }
+
+export function omit(obj, keys) {
+  let out = {};
+  Object.keys(obj).filter(k => !keys.includes(k)).forEach(k => out[k] = obj[k]);
+  return out;
+}
