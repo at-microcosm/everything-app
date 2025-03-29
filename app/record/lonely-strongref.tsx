@@ -14,28 +14,30 @@ export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) 
   }
 
   return (
-    <div className="rounded border border-gray-200 px-3 pb-3 my-8 dark:border-gray-700">
-      <p>
+    <div className="pb-3 my-8 mb-10 dark:border-gray-700">
+      <div className="opacity-69">
+        <Fetch
+          using={resolve_did}
+          param={uri.did}
+          ok={doc => (
+            <Fetch
+              using={get_pds_record}
+              param={pds(doc)}
+              param2={uri.did}
+              param3={uri.collection}
+              param4={uri.rkey}
+              ok={({ value }) => (
+                <Referenced record={value} collection={uri.collection} poster={aka(doc)} />
+              )}
+            />
+          )}
+        />
+      </div>
+      <p className="relative float-right right-2 inline-block px-1 bg-gray-950 rounded bottom-3">
         <NiceNSID parts={nsParts} />
         <span className="text-slate-500"> ← </span>
         <Identity did={did} />
       </p>
-      <Fetch
-        using={resolve_did}
-        param={uri.did}
-        ok={doc => (
-          <Fetch
-            using={get_pds_record}
-            param={pds(doc)}
-            param2={uri.did}
-            param3={uri.collection}
-            param4={uri.rkey}
-            ok={({ value }) => (
-              <Referenced record={value} collection={uri.collection} poster={aka(doc)} />
-            )}
-          />
-        )}
-      />
     </div>
   );
 }
@@ -45,8 +47,8 @@ function Referenced({ record, collection, poster }) {
   const ns_parts = collection.split('.');
 
   return (
-    <div>
-      <p>
+    <div className="rounded border border-gray-200 p-3 pb-5 dark:border-gray-700 bg-slate-900">
+      <p className="text-xs">
         <NiceNSID parts={ns_parts} />
         <span className="text-slate-500"> ← </span>
         <Handle handle={poster} />
