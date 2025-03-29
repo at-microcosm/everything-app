@@ -28,10 +28,25 @@ export function Identity({ did }) {
       <Fetch
         using={resolveHandle}
         param={did}
-        ok={handle => (
-          <span class="text-cyan-300">@{handle}</span>
+        loading={_ => (
+          <span>resolving handle&hellip;</span>
         )}
+        ok={handle => <Handle handle={handle} />}
       />
+    </>
+  );
+}
+
+export function Handle({ handle }) {
+  const parts = handle.split('.');
+  const sub = parts[0];
+  const suf = parts.slice(1).join('.');
+
+  return (
+    <>
+      <span class="text-slate-600">@</span>
+      <span class="text-cyan-300">{sub}</span>
+      <span class="text-slate-600">.{suf}</span>
     </>
   );
 }
