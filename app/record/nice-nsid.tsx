@@ -9,12 +9,12 @@ export function NiceNSID({ parts }) {
 
   return (
     <>
-      {tld && <span class="text-slate-600">{tld}.</span>}
-      <span class="text-slate-200">{ thinger }</span>
-      <span class="text-slate-600">
+      {tld && <span className="text-slate-600">{tld}.</span>}
+      <span className="text-slate-200">{ thinger }</span>
+      <span className="text-slate-600">
         .{btweeners && `${btweeners}.`}
       </span>
-      <span class="text-yellow-200">{ thing }</span>
+      <span className="text-yellow-200">{ thing }</span>
     </>
   );
 }

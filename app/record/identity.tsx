@@ -8,30 +8,45 @@ const docResolver = new CompositeDidDocumentResolver({
   },
 });
 
-const resolveHandle = async did => {
-  const { alsoKnownAs } = await docResolver.resolve(did);
-  if (!alsoKnownAs) return did;
+export const resolve_did = async did => await docResolver.resolve(did);
+
+export const aka = ({ alsoKnownAs, id }) => {
+  if (!alsoKnownAs) return id;
 
   let at_handle = alsoKnownAs[0];
-  if (!at_handle) return did;
-  if (!at_handle.startsWith('at://')) return did;
+  if (!at_handle) return id;
+  if (!at_handle.startsWith('at://')) return id;
 
   at_handle = at_handle.slice('at://'.length);
-  if (!at_handle) return did;
+  if (!at_handle) return id;
 
   return at_handle;
+}
+
+export const pds = ({ service }) => {
+  if (!service) {
+    throw new Error('missing service from identity doc');
+  }
+  const { serviceEndpoint } = service[0];
+  if (!serviceEndpoint) {
+    throw new Error('missing serviceEndpoint from identity service array');
+  }
+  return serviceEndpoint;
 }
 
 export function Identity({ did }) {
   return (
     <>
       <Fetch
-        using={resolveHandle}
+        using={resolve_did}
         param={did}
         loading={_ => (
           <span>resolving handle&hellip;</span>
         )}
-        ok={handle => <Handle handle={handle} />}
+        error={e => (
+          <span>invlaid handle? {`${e}`}</span>
+        )}
+        ok={doc => <Handle handle={aka(doc)} />}
       />
     </>
   );
@@ -44,9 +59,9 @@ export function Handle({ handle }) {
 
   return (
     <>
-      <span class="text-slate-600">@</span>
-      <span class="text-cyan-300">{sub}</span>
-      <span class="text-slate-600">.{suf}</span>
+      <span className="text-slate-600">@</span>
+      <span className="text-cyan-300">{sub}</span>
+      <span className="text-slate-600">.{suf}</span>
     </>
   );
 }

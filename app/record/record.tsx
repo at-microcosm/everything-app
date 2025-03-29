@@ -32,7 +32,7 @@ export function Record({ record }) {
     <div className="rounded border border-gray-200 px-3 pb-3 my-8 dark:border-gray-700">
       <div className="relative bottom-3 inline-block px-1 bg-gray-950">
         <NiceNSID parts={ns_parts} />
-        <span class="text-slate-500"> ← </span>
+        <span className="text-slate-500"> ← </span>
         <Identity did={record.did} />
       </div>
 
