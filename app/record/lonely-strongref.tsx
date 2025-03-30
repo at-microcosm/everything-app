@@ -2,7 +2,7 @@ import { Fetch } from '../fetch/fetch';
 import { get_pds_record } from '../fetch/get-pds-record';
 import { Identity, Handle, aka, pds, resolve_did } from './identity';
 import { NiceNSID } from './nice-nsid';
-import { omit, parse_at_uri } from '../utils';
+import { nice_time_ago, omit, parse_at_uri } from '../utils';
 
 
 export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) {
@@ -14,7 +14,7 @@ export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) 
   }
 
   return (
-    <div className="pb-3 my-8 mb-10 dark:border-gray-700">
+    <div className="pb-3 my-8 mb-12 dark:border-gray-700">
       <div className="opacity-69">
         <Fetch
           using={resolve_did}
@@ -33,10 +33,14 @@ export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) 
           )}
         />
       </div>
-      <p className="relative float-right right-2 inline-block px-1 bg-gray-950 rounded bottom-3">
+      <p className="relative float-right right-2 inline-block px-1 bg-gray-950 rounded bottom-3 leading-5 text-right">
         <NiceNSID parts={nsParts} />
         <span className="text-slate-500"> ← </span>
         <Identity did={did} />
+        <br/>
+        <span className="text-xs text-slate-500 italic">
+          { nice_time_ago(timeUs) } ago
+        </span>
       </p>
     </div>
   );

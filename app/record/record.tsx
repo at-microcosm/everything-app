@@ -1,5 +1,6 @@
 import { Identity } from './identity';
 import { LonelyStrongRef } from './lonely-strongref';
+import { LonelyDID } from './lonely-did';
 import { NiceNSID } from './nice-nsid';
 import { nice_time_ago, omit } from '../utils';
 import { is_strongref, is_did } from './heuristics';
@@ -24,12 +25,20 @@ export function Record({ record }) {
         />
       );
     } else if (is_did(lonely_val)) {
+      return (
+        <LonelyDID
+          lonelyDid={lonely_val}
+          nsParts={ns_parts}
+          did={record.did}
+          timeUs={record.time_us}
+        />
+      );
       return <p>oh neat i'm just a did <NiceNSID parts={ns_parts} /></p>;
     }
   }
 
   return (
-    <div className="rounded border border-gray-200 px-3 pb-3 my-8 dark:border-gray-700">
+    <div className="rounded border border-gray-200 px-3 pb-3 my-8 mb-10 dark:border-gray-700">
       <div className="relative bottom-3 inline-block px-1 bg-gray-950">
         <NiceNSID parts={ns_parts} />
         <span className="text-slate-500"> ← </span>
