@@ -2,6 +2,7 @@ import { Fetch } from '../fetch/fetch';
 import { get_pds_record } from '../fetch/get-pds-record';
 import { Identity, Handle, aka, pds, resolve_did } from './identity';
 import { NiceNSID } from './nice-nsid';
+import { RenderContent } from './record';
 import { nice_time_ago, omit, parse_at_uri } from '../utils';
 
 
@@ -57,9 +58,9 @@ function Referenced({ record, collection, poster }) {
         <span className="text-slate-500"> ← </span>
         <Handle handle={poster} />
       </p>
-      <pre className="text-xs max-h-24 overflow-scroll">
-        {JSON.stringify(without_common_meta, null, 2)}
-      </pre>
+      <div className="text-xs">
+        <RenderContent cleanRecord={without_common_meta} />
+      </div>
     </div>
   );
 }

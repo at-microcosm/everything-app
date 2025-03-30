@@ -11,7 +11,7 @@ export function LonelyDID({ lonelyDid, nsParts, did, timeUs  }) {
         <Identity did={did} />
         <span className="text-slate-500">: </span>
       </p>
-      <p class="text-right">
+      <p className="text-right">
         <NiceNSID parts={nsParts} />
         <span className="text-slate-500"> → </span>
         <Fetch

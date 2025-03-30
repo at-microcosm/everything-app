@@ -1,4 +1,4 @@
-import { Record } from '../record/record';
+import { UFOsRecord } from '../record/record';
 
 export function Timeline({ records }) {
   const sorted = records.toSorted((a, b) => b.time_us - a.time_us);
@@ -42,7 +42,7 @@ export function Timeline({ records }) {
   });
 
   return filtered.map(r => (
-    <Record
+    <UFOsRecord
       key={`${r.did}/${r.collection}/${r.rkey}#${r.time_us}`}
       record={r}
     />
