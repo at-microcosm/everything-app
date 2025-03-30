@@ -76,8 +76,6 @@ export function RenderContent({ cleanRecord }) {
   const { texts, without } = extract_texts(cleanRecord);
   const without_langs = omit(without, ['langs']);
 
-  console.log('wol', Object.keys(without_langs));
-
   return (
     <>
       {texts.map((t, i) => (

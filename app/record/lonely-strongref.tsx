@@ -1,5 +1,4 @@
-import { Fetch } from '../fetch/fetch';
-import { get_pds_record } from '../fetch/get-pds-record';
+import { Fetch, get_pds_record, get_did_count } from '../fetch';
 import { Identity, Handle, aka, pds, resolve_did } from './identity';
 import { NiceNSID } from './nice-nsid';
 import { RenderContent } from './record';
@@ -38,6 +37,17 @@ export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) 
         <NiceNSID parts={nsParts} />
         <span className="text-slate-500"> ← </span>
         <Identity did={did} />
+        <Fetch
+          using={get_did_count}
+          param={lonelyVal.uri}
+          param2={nsParts.join('.')}
+          param3={`.${lonelyKey}.uri`}
+          ok={({ total }) => (
+            <>
+              <span className="text-cyan-700"> + {total.toLocaleString()} other{total !== 1 && 's'}</span>
+            </>
+          )}
+        />
         <br/>
         <span className="text-xs text-slate-500 italic">
           { nice_time_ago(timeUs) } ago

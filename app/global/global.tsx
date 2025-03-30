@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Timeline } from '../timeline/timeline';
-import { Fetch } from '../fetch/fetch';
-import { getJson } from '../fetch/get-json';
-import { getCollectionRecords } from '../fetch/get-collection-records';
+import { Fetch, getJson, getCollectionRecords } from '../fetch';
 
 
 export function Global() {

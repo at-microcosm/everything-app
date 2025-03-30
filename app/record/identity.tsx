@@ -1,5 +1,5 @@
 import { CompositeDidDocumentResolver, PlcDidDocumentResolver, WebDidDocumentResolver } from '@atcute/identity-resolver';
-import { Fetch } from '../fetch/fetch';
+import { Fetch } from '../fetch';
 
 const docResolver = new CompositeDidDocumentResolver({
   methods: {
