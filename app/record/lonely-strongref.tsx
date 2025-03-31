@@ -1,18 +1,11 @@
-import { Fetch, get_pds_record, get_did_count } from '../fetch';
+import { Fetch, get_pds_record, get_did_count, get_at_uri } from '../fetch';
 import { Identity, Actor, Handle, aka, pds, resolve_did } from './identity';
 import { NiceNSID } from './nice-nsid';
 import { RenderContent } from './record';
-import { nice_time_ago, omit, parse_at_uri } from '../utils';
+import { nice_time_ago, omit } from '../utils';
 
 
 export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) {
-  let uri;
-  try {
-    uri = parse_at_uri(lonelyVal.uri);
-  } catch (e) {
-    return <p>error: oops {`${e}`}</p>;
-  }
-
   return (
     <div className="border-s-2 ml-[-2px] px-3 pb-0 my-8 mb-16 border-slate-800 bg-slate-900/50">
       <div className="pl-[2px] relative right-8 bottom-5 inline-block">
@@ -36,28 +29,19 @@ export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) 
 
       <div className="text-xs relative bottom-3">
         <Fetch
-          using={resolve_did}
-          param={uri.did}
-          ok={doc => (
-            <Fetch
-              using={get_pds_record}
-              param={pds(doc)}
-              param2={uri.did}
-              param3={uri.collection}
-              param4={uri.rkey}
-              ok={({ value }) => (
-                <Referenced record={value} collection={uri.collection} poster={uri.did} />
-              )}
-            />
+          using={get_at_uri}
+          param={lonelyVal.uri}
+          ok={({ did, collection, record }) => (
+            <Referenced did={did} collection={collection} record={record} />
           )}
         />
       </div>
     </div>
   );
-
 }
 
-function Referenced({ record, collection, poster }) {
+
+function Referenced({ record, collection, did }) {
   const without_common_meta = omit(record, ['$type', 'createdAt']);
   const ns_parts = collection.split('.');
 
@@ -65,7 +49,7 @@ function Referenced({ record, collection, poster }) {
     <div className="ml-2">
       <div className="text-xs align-baseline relative z-1">
         <div className="inline-block">
-          <Actor did={poster} nsParts={ns_parts} mini={true} />
+          <Actor did={did} nsParts={ns_parts} mini={true} />
         </div>
       </div>
       <div className="text-xs left-2 p-3 mr-7 border-s-2 border-slate-700 relative bottom-3 z-0 bg-black">

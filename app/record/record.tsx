@@ -1,9 +1,10 @@
+import { Fetch, get_at_uri } from '../fetch';
 import { Identity, Actor } from './identity';
 import { LonelyStrongRef } from './lonely-strongref';
 import { LonelyDID } from './lonely-did';
 import { NiceNSID } from './nice-nsid';
-import { nice_time_ago, omit } from '../utils';
-import { is_strongref, is_did, extract_texts } from './heuristics';
+import { nice_time_ago, omit, parse_at_uri } from '../utils';
+import { is_aturi, is_strongref, is_did, extract_texts } from './heuristics';
 
 
 export function UFOsRecord({ record }) {
@@ -105,12 +106,58 @@ export function RenderContent({ cleanRecord, smol }) {
             <p className="text-pink-300">
               {k}:
             </p>
-            <pre className="bg-slate-900">
-              {JSON.stringify(without_langs[k], null, 2)}
-            </pre>
+            <RenderValue val={without_langs[k]} />
           </div>
         ))}
       </div>
     </>
+  );
+}
+
+function RenderValue({ val }) {
+  if (typeof val === 'string') {
+    if (is_did(val)) {
+      return (
+        <Actor did={val} tiny={true} />
+      );
+    } else if (is_aturi(val)) {
+      return (
+        <Fetch
+          using={get_at_uri}
+          param={val}
+          ok={({ did, collection, record }) => (
+            <Referenced did={did} collection={collection} record={record} />
+          )}
+        />
+      );
+    }
+    return (
+      <span>{val}</span>
+    );
+  } else if (typeof val === 'boolean') {
+    return val ? '✅' : '❌';
+  }
+  return (
+    <pre className="bg-slate-900">
+      {JSON.stringify(val, null, 2)}
+    </pre>
+  );
+}
+
+function Referenced({ record, collection, did }) {
+  const without_common_meta = omit(record, ['$type', 'createdAt']);
+  const ns_parts = collection.split('.');
+
+  return (
+    <div className="ml-2">
+      <div className="text-xs align-baseline relative z-1">
+        <div className="inline-block">
+          <Actor did={did} nsParts={ns_parts} mini={true} />
+        </div>
+      </div>
+      <div className="text-xs left-2 p-3 mr-7 border-s-2 border-slate-700 relative bottom-3 z-0 bg-black">
+        <RenderContent cleanRecord={without_common_meta} smol={true} />
+      </div>
+    </div>
   );
 }

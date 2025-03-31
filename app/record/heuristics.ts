@@ -1,19 +1,23 @@
 import { isAtprotoDid } from '@atcute/identity';
 import { fromString as cidFromString } from '@atcute/cid';
-import { omit } from '../utils';
+import { omit, parse_at_uri } from '../utils';
+
+export function is_aturi(obj: any): boolean {
+  if (typeof obj !== 'string') return false;
+  return obj.startsWith("at://");
+}
 
 export function is_strongref(obj: any): boolean {
   if (!obj) return false;
   if (typeof obj !== 'object') return false;
   if (Object.keys(obj).length !== 2) return false;
   if (typeof obj.cid !== 'string') return false;
-  if (typeof obj.uri !== 'string') return false;
+  if (!is_aturi(obj.uri)) return false;
   try {
     const _ = cidFromString(obj.cid);
   } catch (_) {
     return false;
   }
-  if (!obj.uri.startsWith("at://")) return false;
   return true;
 }
 

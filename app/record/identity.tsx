@@ -10,9 +10,11 @@ const docResolver = new CompositeDidDocumentResolver({
   },
 });
 
-export const resolve_did = async did => await docResolver.resolve(did);
+export async function resolve_did(did) {
+  return await docResolver.resolve(did);
+}
 
-export const aka = ({ alsoKnownAs, id }) => {
+export function aka({ alsoKnownAs, id }) {
   if (!alsoKnownAs) return id;
 
   let at_handle = alsoKnownAs[0];
@@ -25,7 +27,7 @@ export const aka = ({ alsoKnownAs, id }) => {
   return at_handle;
 }
 
-export const pds = ({ service }) => {
+export function pds({ service }) {
   if (!service) {
     throw new Error('missing service from identity doc');
   }
