@@ -39,7 +39,7 @@ export function UFOsRecord({ record }) {
 
   if (wcm_keys.length === 0) {
     return (
-      <div className="border-s-2 ml-[-2px] px-3 h-4 pb-0 my-8 mb-12 border-slate-800 bg-slate-900/50">
+      <div className="border-s-2 ml-[-2px] px-3 h-4 pb-0 my-8 mb-16 border-slate-800 bg-slate-900/50">
         <div className="pl-[2px] relative right-8 bottom-5 inline-block">
           <Actor nsParts={ns_parts} did={record.did} timeUs={record.time_us}>
             <span className="inline-block ml-4 italic text-slate-500">
@@ -52,7 +52,7 @@ export function UFOsRecord({ record }) {
   }
 
   return (
-    <div className="border-s-2 ml-[-2px] px-3 pb-0 my-8 mb-12 border-slate-800 bg-slate-900/50">
+    <div className="border-s-2 ml-[-2px] px-3 pb-0 my-8 mb-16 border-slate-800 bg-slate-900/50">
       <div className="pl-[2px] relative right-8 bottom-5 inline-block">
         <Actor nsParts={ns_parts} did={record.did} timeUs={record.time_us} />
       </div>
@@ -64,10 +64,33 @@ export function UFOsRecord({ record }) {
   );
 }
 
-export function RenderContent({ cleanRecord }) {
+export function RenderContent({ cleanRecord, smol }) {
   const { texts, without } = extract_texts(cleanRecord);
   const without_langs = omit(without, ['langs']);
 
+  if (smol) {
+    return (
+      <div className="max-h-12 overflow-scroll">
+        {texts.map((t, i) => (
+          <p key={i} className="my-4">
+            {t}
+          </p>
+        ))}
+        <div>
+          {Object.keys(without_langs).map(k => (
+            <div key={k} className="flex gap-2">
+              <p className="text-pink-300">
+                {k}:
+              </p>
+              <pre className="bg-slate-900">
+                {JSON.stringify(without_langs[k], null, 2)}
+              </pre>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -82,7 +105,7 @@ export function RenderContent({ cleanRecord }) {
             <p className="text-pink-300">
               {k}:
             </p>
-            <pre>
+            <pre className="bg-slate-900">
               {JSON.stringify(without_langs[k], null, 2)}
             </pre>
           </div>

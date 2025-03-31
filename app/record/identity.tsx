@@ -68,7 +68,7 @@ export function Handle({ handle, hideAt }) {
   );
 }
 
-export function Actor({ did, nsParts, timeUs, children, tiny }) {
+export function Actor({ did, nsParts, timeUs, children, mini, tiny }) {
   return (
     <div className="flex gap-1 items-center">
       <Fetch
@@ -90,7 +90,7 @@ export function Actor({ did, nsParts, timeUs, children, tiny }) {
                 param3={'app.bsky.actor.profile'}
                 param4="self"
                 ok={({ value }) => !!value?.avatar?.ref?.$link
-                  ? <Pfp did={did} link={value.avatar.ref?.$link} tiny={tiny} />
+                  ? <Pfp did={did} link={value.avatar.ref?.$link} mini={mini} tiny={tiny} />
                   : <NoPfp />
                 }
               />
@@ -102,14 +102,21 @@ export function Actor({ did, nsParts, timeUs, children, tiny }) {
                 <>
                   <p>
                     <Handle handle={aka(doc)} hideAt={true} />
-                    <span className="text-slate-600 inline-block ml-2">
-                      { nice_time_ago(timeUs) } ago
-                    </span>
+                    {mini ? (
+                      <>
+                        <span className="text-slate-400">'s </span>
+                        <NiceNSID parts={nsParts} collapse={true} />
+                      </>
+                    ) : (
+                      <span className="text-slate-600">
+                        {', '}{ nice_time_ago(timeUs) } ago
+                      </span>
+                    )}
                   </p>
-                  <p>
+                  {!mini && <p>
                     <NiceNSID parts={nsParts} />
                     { children }
-                  </p>
+                  </p>}
                 </>
               )}
             </div>
@@ -120,13 +127,13 @@ export function Actor({ did, nsParts, timeUs, children, tiny }) {
   );
 }
 
-export function Pfp({ did, link, tiny }) {
+export function Pfp({ did, link, mini, tiny }) {
   const CDN = 'https://cdn.bsky.app/img/avatar/plain'; // freeload for now
   return (
     <img
       alt="user avatar"
       src={`${CDN}/${did}/${link}`}
-      className={`block rounded-full ${tiny ? 'w-4 h-4' : 'w-9 h-9'}`}
+      className={`block rounded-full ${tiny ? 'w-4 h-4' : mini ? 'w-5 h-5' : 'w-9 h-9'}`}
     />
   );
 }

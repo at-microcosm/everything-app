@@ -1,5 +1,5 @@
 import { Fetch, get_pds_record, get_did_count } from '../fetch';
-import { Identity, Handle, aka, pds, resolve_did } from './identity';
+import { Identity, Actor, Handle, aka, pds, resolve_did } from './identity';
 import { NiceNSID } from './nice-nsid';
 import { RenderContent } from './record';
 import { nice_time_ago, omit, parse_at_uri } from '../utils';
@@ -14,8 +14,27 @@ export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) 
   }
 
   return (
-    <div className="pb-3 my-8 mb-12 dark:border-gray-700">
-      <div className="opacity-69">
+    <div className="border-s-2 ml-[-2px] px-3 pb-0 my-8 mb-16 border-slate-800 bg-slate-900/50">
+      <div className="pl-[2px] relative right-8 bottom-5 inline-block">
+        <Actor nsParts={nsParts} did={did} timeUs={timeUs}>
+          <span className="inline-block ml-2 text-xs">
+            <Fetch
+              using={get_did_count}
+              param={lonelyVal.uri}
+              param2={nsParts.join('.')}
+              param3={`.${lonelyKey}.uri`}
+              ok={({ total }) => (
+                <>
+                  <span className="text-slate-600"> + </span>
+                  <span className="text-cyan-700">{total.toLocaleString()} other{total !== 1 && 's'}</span>
+                </>
+              )}
+            />
+          </span>
+        </Actor>
+      </div>
+
+      <div className="text-xs relative bottom-3">
         <Fetch
           using={resolve_did}
           param={uri.did}
@@ -27,34 +46,15 @@ export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) 
               param3={uri.collection}
               param4={uri.rkey}
               ok={({ value }) => (
-                <Referenced record={value} collection={uri.collection} poster={aka(doc)} />
+                <Referenced record={value} collection={uri.collection} poster={uri.did} />
               )}
             />
           )}
         />
       </div>
-      <p className="relative float-right right-2 inline-block px-1 bg-gray-950 rounded bottom-3 leading-5 text-right">
-        <NiceNSID parts={nsParts} />
-        <span className="text-slate-500"> ← </span>
-        <Identity did={did} />
-        <Fetch
-          using={get_did_count}
-          param={lonelyVal.uri}
-          param2={nsParts.join('.')}
-          param3={`.${lonelyKey}.uri`}
-          ok={({ total }) => (
-            <>
-              <span className="text-cyan-700"> + {total.toLocaleString()} other{total !== 1 && 's'}</span>
-            </>
-          )}
-        />
-        <br/>
-        <span className="text-xs text-slate-500 italic">
-          { nice_time_ago(timeUs) } ago
-        </span>
-      </p>
     </div>
   );
+
 }
 
 function Referenced({ record, collection, poster }) {
@@ -62,14 +62,14 @@ function Referenced({ record, collection, poster }) {
   const ns_parts = collection.split('.');
 
   return (
-    <div className="rounded border border-gray-200 p-3 pb-5 dark:border-gray-700 bg-slate-900">
-      <p className="text-xs">
-        <NiceNSID parts={ns_parts} />
-        <span className="text-slate-500"> ← </span>
-        <Handle handle={poster} />
-      </p>
-      <div className="text-xs">
-        <RenderContent cleanRecord={without_common_meta} />
+    <div className="ml-2">
+      <div className="text-xs align-baseline relative z-1">
+        <div className="inline-block">
+          <Actor did={poster} nsParts={ns_parts} mini={true} />
+        </div>
+      </div>
+      <div className="text-xs left-2 p-3 mr-7 border-s-2 border-slate-700 relative bottom-3 z-0 bg-black">
+        <RenderContent cleanRecord={without_common_meta} smol={true} />
       </div>
     </div>
   );
