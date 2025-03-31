@@ -14,7 +14,7 @@ export function NiceNSID({ parts }) {
       <span className="text-slate-600">
         .{btweeners && `${btweeners}.`}
       </span>
-      <span className="text-yellow-200">{ thing }</span>
+      <span className="text-yellow-200 bold">{ thing }</span>
     </>
   );
 }

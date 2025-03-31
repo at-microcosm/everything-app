@@ -1,36 +1,18 @@
-import { Identity } from './identity';
+import { Identity, Actor } from './identity';
 import { LonelyStrongRef } from './lonely-strongref';
 import { LonelyDID } from './lonely-did';
 import { NiceNSID } from './nice-nsid';
 import { nice_time_ago, omit } from '../utils';
 import { is_strongref, is_did, extract_texts } from './heuristics';
 
-function Action({ nsParts, did }) {
-  return (
-    <>
-      <NiceNSID parts={nsParts} />
-      <span className="text-slate-500"> ← </span>
-      <Identity did={did} />
-    </>
-  );
-}
 
 export function UFOsRecord({ record }) {
   const ns_parts = record.collection.split('.');
 
-  const without_common_meta = omit(record.record, ['$type', 'createdAt']);
+  const without_common_meta = omit(record.record, ['$type', 'createdAt', 'addedAt']);
   const wcm_keys = Object.keys(without_common_meta);
 
-  if (wcm_keys.length === 0) {
-    return (
-      <div className="pr-3 my-10 mb-16">
-        <Action nsParts={ns_parts} did={record.did} />
-        <p className="text-xs text-right text-slate-500 italic bg-gray-950 px-1 baseline">
-          { nice_time_ago(record.time_us) } ago
-        </p>
-      </div>
-    );
-  } else if (wcm_keys.length === 1) {
+  if (wcm_keys.length === 1) {
     let lonely_key = wcm_keys[0];
     let lonely_val = without_common_meta[lonely_key];
     if (is_strongref(lonely_val)) {
@@ -55,19 +37,29 @@ export function UFOsRecord({ record }) {
     }
   }
 
+  if (wcm_keys.length === 0) {
+    return (
+      <div className="border-s-2 ml-[-2px] px-3 h-4 pb-0 my-8 mb-12 border-slate-800 bg-slate-900/50">
+        <div className="pl-[2px] relative right-8 bottom-5 inline-block">
+          <Actor nsParts={ns_parts} did={record.did} timeUs={record.time_us}>
+            <span className="inline-block ml-4 italic text-slate-500">
+              (empty record)
+            </span>
+          </Actor>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="rounded border border-gray-200 px-3 pb-3 my-8 mb-10 dark:border-gray-700">
-      <div className="relative bottom-3 inline-block px-1 bg-gray-950">
-        <Action nsParts={ns_parts} did={record.did} />
+    <div className="border-s-2 ml-[-2px] px-3 pb-0 my-8 mb-12 border-slate-800 bg-slate-900/50">
+      <div className="pl-[2px] relative right-8 bottom-5 inline-block">
+        <Actor nsParts={ns_parts} did={record.did} timeUs={record.time_us} />
       </div>
 
-      <div className="text-xs">
+      <div className="text-xs relative bottom-3">
         <RenderContent cleanRecord={without_common_meta} />
       </div>
-
-      <p className="text-xs float-right text-slate-500 italic inline-block relative top-1 bg-gray-950 px-1">
-        { nice_time_ago(record.time_us) } ago
-      </p>
     </div>
   );
 }
@@ -75,6 +67,7 @@ export function UFOsRecord({ record }) {
 export function RenderContent({ cleanRecord }) {
   const { texts, without } = extract_texts(cleanRecord);
   const without_langs = omit(without, ['langs']);
+
 
   return (
     <>

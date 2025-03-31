@@ -1,30 +1,21 @@
 import { Fetch } from '../fetch';
-import { Identity, Handle, aka, resolve_did } from './identity';
+import { Identity, Actor, Handle, aka, resolve_did } from './identity';
 import { NiceNSID } from './nice-nsid';
 import { nice_time_ago } from '../utils';
 
 
 export function LonelyDID({ lonelyDid, nsParts, did, timeUs  }) {
   return (
-    <div className="pb-3 my-8 mb-11 dark:border-gray-700">
-      <p className="bottom-3">
-        <Identity did={did} />
-        <span className="text-slate-500">: </span>
+    <div className="flex border-s-2 ml-[-2px] px-3 my-8 mb-16 border-transparent items-center relative right-8">
+      <div className="pl-[2px] inline-block">
+        <Actor nsParts={nsParts} did={did} timeUs={timeUs} />
+      </div>
+      <p className="text-slate-500 mx-6">
+        →
       </p>
-      <p className="text-right">
-        <NiceNSID parts={nsParts} />
-        <span className="text-slate-500"> → </span>
-        <Fetch
-          using={resolve_did}
-          param={lonelyDid}
-          ok={doc => (
-            <Handle handle={aka(doc)} />
-          )}
-        />
-      </p>
-      <p className="text-xs text-slate-500 italic text-right pr-3">
-        { nice_time_ago(timeUs) } ago
-      </p>
+      <div>
+        <Actor did={lonelyDid} nsParts={[]} tiny={true} />
+      </div>
     </div>
   );
 }

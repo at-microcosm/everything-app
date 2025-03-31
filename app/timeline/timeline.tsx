@@ -41,11 +41,15 @@ export function Timeline({ records }) {
     return true;
   });
 
-  return filtered.map(r => (
-    <UFOsRecord
-      key={`${r.did}/${r.collection}/${r.rkey}#${r.time_us}`}
-      record={r}
-    />
-  ));
+  return (
+    <div className="border-s-2 border-dotted border-gray-800">
+      {filtered.map(r => (
+        <UFOsRecord
+          key={`${r.did}/${r.collection}/${r.rkey}#${r.time_us}`}
+          record={r}
+        />
+      ))}
+    </div>
+  );
 
 }
