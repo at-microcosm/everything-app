@@ -46,3 +46,7 @@ export function parse_at_uri(uri: String): { did: String, collection?: String, r
   }
   return { did, collection, rkey };
 }
+
+export function is_object(o: any): boolean {
+  return typeof o === 'object' && !Array.isArray(o) && o !== null;
+}

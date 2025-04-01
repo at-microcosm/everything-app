@@ -70,7 +70,7 @@ export function Handle({ handle, hideAt }) {
   );
 }
 
-export function Actor({ did, nsParts, timeUs, children, mini, tiny }) {
+export function Actor({ did, nsParts, timeUs, children, mini, tiny, hideId }) {
   return (
     <div className="flex gap-1 items-center">
       <Fetch
@@ -103,15 +103,17 @@ export function Actor({ did, nsParts, timeUs, children, mini, tiny }) {
               ) : (
                 <>
                   <p>
-                    <Handle handle={aka(doc)} hideAt={true} />
+                    {!hideId && <Handle handle={aka(doc)} hideAt={true} />}
                     {mini ? (
                       <>
-                        <span className="text-slate-400">'s </span>
+                        {!hideId && <span className="text-slate-400">'s </span>}
                         <NiceNSID parts={nsParts} collapse={true} />
+                        {' '}
+                        { children }
                       </>
                     ) : (
                       <span className="text-slate-600">
-                        {', '}{ nice_time_ago(timeUs) } ago
+                        {!hideId && ', '}{ nice_time_ago(timeUs) } ago
                       </span>
                     )}
                   </p>
