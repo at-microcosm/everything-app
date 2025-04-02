@@ -1,14 +1,14 @@
 import { Fetch } from '../fetch';
 import { pds, resolve_did } from './identity';
 
-export function Blob({ did, blob }) {
+export function Blob({ did, blob, expanded }) {
   const { mimeType, ref: { $link } } = blob;
   const safer_link = encodeURIComponent($link);
   if (mimeType.startsWith('image/')) {
     const url = `https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${safer_link}@jpeg`;
     return (
       <a href={url} target="_blank">
-        <img src={url} className="max-h-32 max-w-32" alt="" />
+        <img src={url} className={expanded ? 'max-h-64 max-w-64' : 'max-h-32 max-w-32'} alt="" />
       </a>
     );
   // } else if (mimeType === 'video/mp4') {

@@ -3,9 +3,10 @@ import { Identity, Actor, Handle, aka, pds, resolve_did } from './identity';
 import { NiceNSID } from './nice-nsid';
 import { RenderContent } from './record';
 import { nice_time_ago, omit } from '../utils';
+import { Fill } from './inflation';
 
 
-export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) {
+export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs, scrollRef, overflows, expanded, setExpanded }) {
   return (
     <div className="border-s-2 ml-[-2px] px-3 pb-0 my-8 mb-16 border-slate-800 bg-slate-900/50">
       <div className="pl-[2px] relative right-8 bottom-5 inline-block">
@@ -32,16 +33,18 @@ export function LonelyStrongRef({ lonelyKey, lonelyVal, nsParts, did, timeUs }) 
           using={get_at_uri}
           param={lonelyVal.uri}
           ok={({ did, collection, record }) => (
-            <Referenced did={did} collection={collection} record={record} />
+            <Referenced did={did} collection={collection} record={record} expanded={expanded} scrollRef={scrollRef} />
           )}
         />
       </div>
+
+      <Fill overflows={overflows} expanded={expanded} setExpanded={setExpanded} clsExtra="-mx-3" />
     </div>
   );
 }
 
 
-function Referenced({ record, collection, did }) {
+function Referenced({ record, collection, did, expanded, scrollRef }) {
   const without_common_meta = omit(record, ['$type', 'createdAt']);
   const ns_parts = collection.split('.');
 
@@ -53,7 +56,7 @@ function Referenced({ record, collection, did }) {
         </div>
       </div>
       <div className="text-xs left-2 p-3 mr-7 border-s-2 border-slate-700 relative bottom-3 z-0 bg-black">
-        <RenderContent cleanRecord={without_common_meta} parentDid={did} smol={true} />
+        <RenderContent cleanRecord={without_common_meta} parentDid={did} smol={true} expanded={expanded} scrollRef={scrollRef} />
       </div>
     </div>
   );

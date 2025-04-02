@@ -8,9 +8,13 @@ import { BadMd } from './bad-md';
 import { Blob } from './blob';
 import { nice_time_ago, omit, parse_at_uri, is_object, is_blob } from '../utils';
 import { is_aturi, is_strongref, is_did, extract_texts } from './heuristics';
+import { useOverflow, Fill } from './inflation';
+
 
 
 export function UFOsRecord({ record }) {
+  const [scrollRef, overflows, expanded, setExpanded] = useOverflow();
+
   const ns_parts = record.collection.split('.');
 
   const without_common_meta = omit(record.record, ['$type', 'createdAt', 'addedAt']);
@@ -27,6 +31,10 @@ export function UFOsRecord({ record }) {
           nsParts={ns_parts}
           did={record.did}
           timeUs={record.time_us}
+          scrollRef={scrollRef}
+          overflows={overflows}
+          expanded={expanded}
+          setExpanded={setExpanded}
         />
       );
     } else if (is_did(lonely_val)) {
@@ -62,19 +70,21 @@ export function UFOsRecord({ record }) {
       </div>
 
       <div className="text-xs relative bottom-3">
-        <RenderContent cleanRecord={without_common_meta} parentDid={record.did} />
+        <RenderContent cleanRecord={without_common_meta} parentDid={record.did} expanded={expanded} scrollRef={scrollRef} />
       </div>
+
+      <Fill overflows={overflows} expanded={expanded} setExpanded={setExpanded} clsExtra="-mx-3" />
     </div>
   );
 }
 
-export function RenderContent({ cleanRecord, parentDid, smol }) {
+export function RenderContent({ cleanRecord, parentDid, smol, expanded, scrollRef }) {
   const { texts, without } = extract_texts(cleanRecord);
   const without_langs = omit(without, ['langs']);
 
   if (smol) {
     return (
-      <div className="max-h-12 overflow-scroll">
+      <div className={`${expanded ? '' : 'max-h-12'} overflow-scroll`} ref={scrollRef}>
         {texts.map((t, i) => (
           <p key={i} className="my-4">
             {t}
@@ -87,7 +97,7 @@ export function RenderContent({ cleanRecord, parentDid, smol }) {
                 {k}:
               </p>
               <pre className="bg-slate-900">
-                <RenderValue val={without_langs[k]} parentDid={parentDid} />
+                <RenderValue val={without_langs[k]} parentDid={parentDid} expanded={expanded} />
               </pre>
             </div>
           ))}
@@ -103,13 +113,13 @@ export function RenderContent({ cleanRecord, parentDid, smol }) {
           {t}
         </p>
       ))}
-      <div className="max-h-24 overflow-scroll">
+      <div className={`${expanded ? '' : 'max-h-24'} overflow-scroll`} ref={scrollRef}>
         {Object.keys(without_langs).map(k => (
           <div key={k} className="flex gap-2">
             <p className="text-pink-300">
               {k}:
             </p>
-            <RenderValue val={without_langs[k]} parentDid={parentDid} />
+            <RenderValue val={without_langs[k]} parentDid={parentDid} expanded={expanded} />
           </div>
         ))}
       </div>
@@ -117,7 +127,7 @@ export function RenderContent({ cleanRecord, parentDid, smol }) {
   );
 }
 
-function RenderValue({ val, parentDid }) {
+function RenderValue({ val, parentDid, expanded }) {
   if (typeof val === 'string') {
     if (is_did(val)) {
       return (
@@ -129,7 +139,7 @@ function RenderValue({ val, parentDid }) {
           using={get_at_uri}
           param={val}
           ok={({ did, collection, record }) => (
-            <Referenced did={did} collection={collection} record={record} hideId={did === parentDid} />
+            <Referenced did={did} collection={collection} record={record} hideId={did === parentDid} expanded={expanded} />
           )}
         />
       );
@@ -143,7 +153,7 @@ function RenderValue({ val, parentDid }) {
         using={get_at_uri}
         param={val.uri}
         ok={({ did, collection, record }) => (
-          <Referenced did={did} collection={collection} record={record} hideId={did === parentDid} />
+          <Referenced did={did} collection={collection} record={record} hideId={did === parentDid} expanded={expanded} />
         )}
       />
     );
@@ -157,19 +167,19 @@ function RenderValue({ val, parentDid }) {
     if (val.length === 0) {
       return <span className="italic text-slate-500">empty</span>;
     } else if (val.length === 1) {
-      return <RenderValue val={val[0]} parentDid={parentDid} />
+      return <RenderValue val={val[0]} parentDid={parentDid} expanded={expanded} />
     }
     return (
       <ul className="list-disc marker:text-sky-400 ml-3">
         {val.map((v, i) => (
           <li key={i} className="mb-1">
-            <RenderValue val={val[i]} parentDid={parentDid} />
+            <RenderValue val={val[i]} parentDid={parentDid} expanded={expanded} />
           </li>
         ))}
       </ul>
     );
   } else if (is_blob(val)) {
-    return <Blob did={parentDid} blob={val} />;
+    return <Blob did={parentDid} blob={val} expanded={expanded} />;
   } else if (is_object(val)) {
     const keys = Object.keys(val);
     if (keys.length === 0) {
@@ -182,7 +192,7 @@ function RenderValue({ val, parentDid }) {
             <p className="text-pink-400">
               {k}:
             </p>
-            <RenderValue val={val[k]} parentDid={parentDid} />
+            <RenderValue val={val[k]} parentDid={parentDid} expanded={expanded} />
           </div>
         ))}
       </div>
@@ -195,7 +205,7 @@ function RenderValue({ val, parentDid }) {
   );
 }
 
-function Referenced({ record, collection, did, hideId }) {
+function Referenced({ record, collection, did, hideId, expanded }) {
   const [show, setShow] = useState(false);
 
   const without_common_meta = omit(record, ['$type', 'createdAt']);
@@ -217,7 +227,7 @@ function Referenced({ record, collection, did, hideId }) {
       </div>
       {show && (
         <div className="text-xs left-2 p-3 mr-7 border-s-2 border-slate-700 relative bottom-3 z-0 bg-black">
-          <RenderContent cleanRecord={without_common_meta} parentDid={did} smol={true} />
+          <RenderContent cleanRecord={without_common_meta} parentDid={did} smol={true} expanded={expanded} />
         </div>
       )}
     </div>
