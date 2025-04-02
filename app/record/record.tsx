@@ -5,7 +5,8 @@ import { LonelyStrongRef } from './lonely-strongref';
 import { LonelyDID } from './lonely-did';
 import { NiceNSID } from './nice-nsid';
 import { BadMd } from './bad-md';
-import { nice_time_ago, omit, parse_at_uri, is_object } from '../utils';
+import { Blob } from './blob';
+import { nice_time_ago, omit, parse_at_uri, is_object, is_blob } from '../utils';
 import { is_aturi, is_strongref, is_did, extract_texts } from './heuristics';
 
 
@@ -86,7 +87,7 @@ export function RenderContent({ cleanRecord, parentDid, smol }) {
                 {k}:
               </p>
               <pre className="bg-slate-900">
-                {JSON.stringify(without_langs[k], null, 2)}
+                <RenderValue val={without_langs[k]} parentDid={parentDid} />
               </pre>
             </div>
           ))}
@@ -167,6 +168,8 @@ function RenderValue({ val, parentDid }) {
         ))}
       </ul>
     );
+  } else if (is_blob(val)) {
+    return <Blob did={parentDid} blob={val} />;
   } else if (is_object(val)) {
     const keys = Object.keys(val);
     if (keys.length === 0) {
@@ -214,7 +217,7 @@ function Referenced({ record, collection, did, hideId }) {
       </div>
       {show && (
         <div className="text-xs left-2 p-3 mr-7 border-s-2 border-slate-700 relative bottom-3 z-0 bg-black">
-          <RenderContent cleanRecord={without_common_meta} smol={true} />
+          <RenderContent cleanRecord={without_common_meta} parentDid={did} smol={true} />
         </div>
       )}
     </div>

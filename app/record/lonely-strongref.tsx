@@ -53,7 +53,7 @@ function Referenced({ record, collection, did }) {
         </div>
       </div>
       <div className="text-xs left-2 p-3 mr-7 border-s-2 border-slate-700 relative bottom-3 z-0 bg-black">
-        <RenderContent cleanRecord={without_common_meta} smol={true} />
+        <RenderContent cleanRecord={without_common_meta} parentDid={did} smol={true} />
       </div>
     </div>
   );

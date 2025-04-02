@@ -50,3 +50,9 @@ export function parse_at_uri(uri: String): { did: String, collection?: String, r
 export function is_object(o: any): boolean {
   return typeof o === 'object' && !Array.isArray(o) && o !== null;
 }
+
+export function is_blob(o: any): boolean {
+  if (!is_object(o)) return false;
+  if (o.$type !== 'blob') return false;
+  return true;
+}
