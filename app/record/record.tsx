@@ -157,7 +157,7 @@ function RenderValue({ val, parentDid }) {
     if (val.length === 0) {
       return <span className="italic text-slate-500">empty</span>;
     } else if (val.length === 1) {
-      return <RenderValue val={val[0]} />
+      return <RenderValue val={val[0]} parentDid={parentDid} />
     }
     return (
       <ul className="list-disc marker:text-sky-400 ml-3">
