@@ -1,42 +1,8 @@
-import { CompositeDidDocumentResolver, PlcDidDocumentResolver, WebDidDocumentResolver } from '@atcute/identity-resolver';
-import { Fetch, get_pds_record } from '../fetch';
+import { Fetch } from '../fetch/fetch';
+import { get_pds_record } from '../fetch';
 import { NiceNSID } from './nice-nsid';
 import { nice_time_ago } from '../utils';
-
-const docResolver = new CompositeDidDocumentResolver({
-  methods: {
-    plc: new PlcDidDocumentResolver(),
-    web: new WebDidDocumentResolver(),
-  },
-});
-
-export async function resolve_did(did) {
-  return await docResolver.resolve(did);
-}
-
-export function aka({ alsoKnownAs, id }) {
-  if (!alsoKnownAs) return id;
-
-  let at_handle = alsoKnownAs[0];
-  if (!at_handle) return id;
-  if (!at_handle.startsWith('at://')) return id;
-
-  at_handle = at_handle.slice('at://'.length);
-  if (!at_handle) return id;
-
-  return at_handle;
-}
-
-export function pds({ service }) {
-  if (!service) {
-    throw new Error('missing service from identity doc');
-  }
-  const { serviceEndpoint } = service[0];
-  if (!serviceEndpoint) {
-    throw new Error('missing serviceEndpoint from identity service array');
-  }
-  return serviceEndpoint;
-}
+import { aka, resolve_did, pds } from './identity-utils';
 
 export function Identity({ did }) {
   return (
@@ -64,8 +30,8 @@ export function Handle({ handle, hideAt }) {
   return (
     <>
       {!hideAt && <span className="text-slate-600">@</span>}
-      <span className="text-cyan-300">{sub}</span>
-      <span className="text-slate-400">.{suf}</span>
+      <span className="text-cyan-300 break-all">{sub}</span>
+      <span className="text-slate-400 break-all">.{suf}</span>
     </>
   );
 }
@@ -95,6 +61,7 @@ export function Actor({ did, nsParts, timeUs, children, mini, tiny, hideId }) {
                   ? <Pfp did={did} link={value.avatar.ref?.$link} mini={mini} tiny={tiny} />
                   : <NoPfp />
                 }
+                error={e => <NoPfp err={true} mini={mini} tiny={tiny} />}
               />
             </div>
             <div className="text-xs">
@@ -142,6 +109,13 @@ export function Pfp({ did, link, mini, tiny }) {
   );
 }
 
-export function NoPfp() {
-  return 'no pfp';
+export function NoPfp({ err, mini, tiny }) {
+  return (
+    <div
+      className={`block text-xs flex items-center justify-center ${err ? 'text-orange-300' : 'text-slate-500'} bg-slate-800 rounded-full ${tiny ? 'w-4 h-4' : mini ? 'w-5 h-5' : 'w-9 h-9'}`}
+      title="failed to load user profile pic"
+    >
+      <span>:)</span>
+    </div>
+  );
 }

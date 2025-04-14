@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Fetch, get_at_uri } from '../fetch';
+import { Fetch } from '../fetch/fetch';
+import { get_at_uri } from '../fetch';
 import { Identity, Actor } from './identity';
 import { LonelyStrongRef } from './lonely-strongref';
 import { LonelyDID } from './lonely-did';
@@ -8,7 +9,8 @@ import { BadMd } from './bad-md';
 import { Blob } from './blob';
 import { nice_time_ago, omit, parse_at_uri, is_object, is_blob } from '../utils';
 import { is_aturi, is_strongref, is_did, extract_texts } from './heuristics';
-import { useOverflow, Fill } from './inflation';
+import { Fill } from './inflation';
+import { useOverflow } from './overflow';
 
 
 

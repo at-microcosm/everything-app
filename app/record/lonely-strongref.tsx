@@ -1,5 +1,7 @@
-import { Fetch, get_pds_record, get_did_count, get_at_uri } from '../fetch';
-import { Identity, Actor, Handle, aka, pds, resolve_did } from './identity';
+import { Fetch } from '../fetch/fetch';
+import { get_pds_record, get_did_count, get_at_uri } from '../fetch';
+import { Identity, Actor, Handle } from './identity';
+import { aka, pds, resolve_did } from './identity-utils';
 import { NiceNSID } from './nice-nsid';
 import { RenderContent } from './record';
 import { nice_time_ago, omit } from '../utils';

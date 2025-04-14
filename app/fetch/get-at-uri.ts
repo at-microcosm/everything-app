@@ -1,4 +1,4 @@
-import { resolve_did, pds } from '../record/identity';
+import { resolve_did, pds } from '../record/identity-utils';
 import { get_pds_record } from '.';
 import { parse_at_uri } from '../utils';
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Timeline } from '../timeline/timeline';
-import { Fetch, getJson, getCollectionRecords } from '../fetch';
+import { Fetch } from '../fetch/fetch';
+import { getJson, getCollectionRecords, adapt_new_ufos } from '../fetch';
 
 
 export function Global() {
@@ -18,10 +19,7 @@ export function Global() {
             param={collections_url}
             loading={_ => <p>Loading collections&hellip;</p>}
             ok={json => (
-              <>
-                <CollectionsLoader collections={json} />
-                <pre>{JSON.stringify(json, null, 2)}</pre>
-              </>
+              <CollectionsLoader collections={adapt_new_ufos(json)} />
             )}
           />
         </div>

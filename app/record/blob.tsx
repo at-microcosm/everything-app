@@ -1,5 +1,5 @@
-import { Fetch } from '../fetch';
-import { pds, resolve_did } from './identity';
+import { Fetch } from '../fetch/fetch';
+import { pds, resolve_did } from './identity-utils';
 
 export function Blob({ did, blob, expanded }) {
   const { mimeType, ref: { $link } } = blob;

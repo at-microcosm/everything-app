@@ -1,5 +1,6 @@
-import { Fetch } from '../fetch';
-import { Identity, Actor, Handle, aka, resolve_did } from './identity';
+import { Fetch } from '../fetch/fetch';
+import { Identity, Actor, Handle } from './identity';
+import { aka, resolve_did } from './identity-utils';
 import { NiceNSID } from './nice-nsid';
 import { nice_time_ago } from '../utils';
 
