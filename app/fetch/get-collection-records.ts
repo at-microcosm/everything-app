@@ -6,6 +6,9 @@ const endpoint = (collection, limit = 3) =>
 const endpointAll = (limit = 4) =>
   `http://localhost:9999/records?limit=${limit}`; // todo: avoid query injection
 
+const endpointOne = (collection, limit = 48) =>
+  `http://localhost:9999/records?collection=${collection}&limit=${limit}`; // todo: avoid query injection
+
 export async function getCollectionRecords(collections, onProgress = () => {}) {
   const total = collections.length;
   let goods = 0;
@@ -31,4 +34,8 @@ export async function getCollectionRecords(collections, onProgress = () => {}) {
 
 export async function getAllCollectionRecords() {
   return getJson(endpointAll());
+}
+
+export async function getOneCollectionRecords(collection) {
+  return getJson(endpointOne(collection));
 }

@@ -1,6 +1,6 @@
 import { UFOsRecord } from '../record/record';
 
-export function Timeline({ records }) {
+export function Timeline({ records, all }) {
   const sorted = records.toSorted((a, b) => b.time_us - a.time_us);
 
   const rootTotals = {};
@@ -10,6 +10,7 @@ export function Timeline({ records }) {
   let lastLastAdded;
 
   const filtered = sorted.filter(({ collection }, i, els) => {
+    if (all) return true;
     if (collection === lastAdded || collection === lastLastAdded) {
       return false;
     }

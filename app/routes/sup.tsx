@@ -5,6 +5,6 @@ export function meta({}: Route.MetaArgs) {
   return [{ title: "everything app" }];
 }
 
-export default function Home() {
+export default function Sup() {
   return <p>sup</p>;
 }

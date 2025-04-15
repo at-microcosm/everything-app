@@ -88,7 +88,7 @@ export function RenderContent({ cleanRecord, parentDid, smol, expanded, scrollRe
     return (
       <div className={`${expanded ? '' : 'max-h-12'} overflow-scroll`} ref={scrollRef}>
         {texts.map((t, i) => (
-          <p key={i} className="my-4">
+          <p key={i} className="my-4 break-all">
             {t}
           </p>
         ))}
@@ -111,7 +111,7 @@ export function RenderContent({ cleanRecord, parentDid, smol, expanded, scrollRe
   return (
     <>
       {texts.map((t, i) => (
-        <p key={i} className="my-4">
+        <p key={i} className="my-4 break-all">
           {t}
         </p>
       ))}

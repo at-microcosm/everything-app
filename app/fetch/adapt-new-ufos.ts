@@ -1,5 +1,4 @@
 export function adapt_new_ufos(bleh) {
-  console.log('aw');
   // this will lose inner leaves. oh well for now.
   const by_nsid = {};
   const f = (path, o) => {

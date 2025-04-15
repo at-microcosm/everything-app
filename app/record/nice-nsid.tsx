@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 
 export function NiceNSID({ parts, collapse }) {
   const tld = parts.length > 2 ? parts[0] : null;
@@ -8,7 +9,7 @@ export function NiceNSID({ parts, collapse }) {
   const thing = parts[parts.length - 1];
 
   return (
-    <>
+    <Link to={`/collections/${parts.join('.')}`}>
       {tld && !collapse && <span className="text-slate-600">{tld}.</span>}
       <span className="text-slate-200">{ thinger }</span>
       {collapse ? (
@@ -19,6 +20,6 @@ export function NiceNSID({ parts, collapse }) {
         </span>
       )}
       <span className="text-yellow-200 bold">{ thing }</span>
-    </>
+    </Link>
   );
 }
